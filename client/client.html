@@ -1,0 +1,66 @@
+<!-- by Devyn Cairns -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebConsole Client</title>
+    <script src="ext/base64.js"></script>
+    <script src="ext/scriptaculous/lib/prototype.js"></script>
+    <script src="ext/scriptaculous/src/scriptaculous.js"></script>
+    <script src="ext/scriptaculous/src/effects.js"></script>
+    <script src="ext/scriptaculous/src/builder.js"></script>
+    <script src="ext/scriptaculous/src/controls.js"></script>
+    <script src="ext/scriptaculous/src/dragdrop.js"></script>
+    <script src="ext/scriptaculous/src/slider.js"></script>
+    <script src="ext/scriptaculous/src/sound.js"></script>
+    <script src="ext/scriptaculous/src/unittest.js"></script>
+    <script src="ext/web-socket-js/swfobject.js"></script>
+    <script src="ext/web-socket-js/FABridge.js"></script>
+    <script src="ext/web-socket-js/web_socket.js"></script>
+    <script>
+      WebSocket.__swfLocation = "web-socket-js/WebSocketMain.swf";
+      var ws;
+      function init() {
+        ws = new WebSocket("ws://0.0.0.0:3472");
+        ws.onopen = function(e) {
+        };
+        ws.onmessage = function(e) {
+          try {
+            var result;
+            with(window) {
+              result = eval(Base64.decode(e.data));
+            }
+            ws.send(Base64.encode(Object.inspect(result)));
+          } catch (e) {
+            ws.send(Base64.encode("\x1b[31m\x1b[1m" + e.name + ": \x1b[22m" + e.message + "\x1b[0m"));
+          }
+        };
+        ws.onclose = function(e) {
+          $("wc_connection_lost").appear({duration:0.5});
+        };
+      }
+    </script>
+    <style>
+      #wc_connection_lost {
+        font-family: sans-serif;
+        background-color: #ffcc00;
+        font-size: 10px;
+        width: 200px;
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        padding: 5px;
+        border-left: 3px solid black;
+        border-bottom: 3px solid black;
+      }
+      #wc_connection_lost > a, a:visited {
+        color: #333;
+      }
+    </style>
+  </head>
+  <body onload="init();">
+    <div id="wc_connection_lost" style="display:none;">
+      Connection to server lost. <a href="#" onclick="$('wc_connection_lost').fade({duration:0.2,afterFinish:init}); return false;">Reconnect?</a>
+    </div>
+  </body>
+</html>
