@@ -1,5 +1,3 @@
-// script.aculo.us slider.js v1.8.3, Thu Oct 08 11:23:33 +0200 2009
-
 // Copyright (c) 2005-2009 Marty Haught, Thomas Fuchs
 //
 // script.aculo.us is freely distributable under the terms of an MIT-style license.
